@@ -21,7 +21,8 @@ def product():
         product_name = request.args.get('product')
         if category:
             # 若請求包含 category 參數，回傳該種類的商品列表
-            products = db.get_product_names_by_category(category)
+            rows = db.get_product_names_by_category(category)
+            products = [row[0] for row in rows]
             return jsonify({"product": products})
     
         if product_name:
