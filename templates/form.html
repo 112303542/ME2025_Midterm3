@@ -3,12 +3,12 @@
 <form action="/product" method="post">
     <p>
         <label for="product_date">日期：</label>
-        <input type="date" id="product_date" name="product_date" required>
+        <input type="date" id="product_date" name="product-date" required>
     </p>
 
     <p>
         <label for="customer_name">客戶名稱：</label>
-        <input type="text" id="customer_name" name="customer_name" required>
+        <input type="text" id="customer_name" name="customer-name" required>
     </p>
 
     <p>
@@ -25,7 +25,7 @@
 
     <p>
         <label for="product_name">商品名稱：</label>
-        <select id="product_name" name="product_name" onchange="selectProduct()" required>
+        <select id="product_name" name="product-name" onchange="selectProduct()" required>
             <option value="" disabled selected>請先選擇種類</option>
         </select>
     </p>
@@ -37,17 +37,17 @@
 
     <p>
         <label for="product_amount">數量：</label>
-        <input type="number" id="product_amount" name="product_amount" min="1" value="1" onchange="countTotal()" required>
+        <input type="number" id="product_amount" name="product-amount" min="1" value="1" onchange="countTotal()" required>
     </p>
 
     <p>
         <label for="product_total">小計：</label>
-        <input type="number" id="product_total" name="product_total" readonly>
+        <input type="number" id="product_total" name="product-total" readonly>
     </p>
 
     <p>
         <label for="product_status">狀態：</label>
-        <select id="product_status" name="product_status">
+        <select id="product_status" name="product-status">
             <option value="未付款" selected>未付款</option>
             <option value="已付款">已付款</option>
             <option value="已完成">已完成</option>
@@ -56,7 +56,7 @@
 
     <p>
         <label for="product_note">備註：</label>
-        <input type="text" id="product_note" name="product_note">
+        <input type="text" id="product_note" name="product-note">
     </p>
 
     <div class="form-actions">

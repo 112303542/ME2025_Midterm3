@@ -33,13 +33,13 @@ def product():
         # TODO: Implement POST logic to add new order
         # 接收前端 Form Data 並整理成字典
         order_data = {
-            'product_date': request.form.get('product_date'),
-            'customer_name': request.form.get('customer_name'),
-            'product_name': request.form.get('product_name'),
-            'product_amount': request.form.get('product_amount'),
-            'product_total': request.form.get('product_total'),
-            'product_status': request.form.get('product_status'),
-            'product_note': request.form.get('product_note')
+            'product_date': request.form.get('product-date'),
+            'customer_name': request.form.get('customer-name'),
+            'product_name': request.form.get('product-name'),
+            'product_amount': request.form.get('product-amount'),
+            'product_total': request.form.get('product-total'),
+            'product_status': request.form.get('product-status'),
+            'product_note': request.form.get('product-note')
         }
         
         # 寫入資料庫
