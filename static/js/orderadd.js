@@ -78,3 +78,17 @@ function selectProduct() {
         .catch(error => console.error("Error fetching price:", error));
 }
 
+function countTotal() {
+    // TODO: Calculate total price
+    const price = parseFloat(document.getElementById("price").value) || 0;
+    const amount = parseInt(document.getElementById("product_amount").value) || 0;
+    
+    // 計算總價
+    const total = price * amount;
+    
+    // 更新小計欄位
+    const totalField = document.getElementById("product_total");
+    if (totalField) {
+        totalField.value = total;
+    }
+}
