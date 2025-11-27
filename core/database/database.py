@@ -14,8 +14,8 @@ class Database():
         conn.row_factory = sqlite3.Row
         return conn
 
-    @staticmethod
-    def generate_order_id() -> str:
+    #@staticmethod
+    def generate_order_id(self) -> str:
         now = datetime.datetime.now()
         timestamp = now.strftime("%Y%m%d%H%M%S")
         random_num = random.randint(1000, 9999)
