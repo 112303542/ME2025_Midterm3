@@ -14,49 +14,70 @@ class Database():
         random_num = random.randint(1000, 9999)
         return f"OD{timestamp}{random_num}"
 
-    def get_product_names_by_category(self, cur, category):
-        # TODO: Execute SQL to select product names by category
+    def get_product_names_by_category(self, category):
+        # 根據 category 篩選出所有商品名稱
         sql = "SELECT product FROM commodity WHERE category = ?"
-        cur.execute(sql, (category,))
-        # fetchall 會回傳 list of tuples, 例如 [('Item1',), ('Item2',)]
-        # 我們需要轉換成 ['Item1', 'Item2']
-        return [row[0] for row in cur.fetchall()]
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql, (category,))
+                # 將查詢結果 [(name1,), (name2,)] 轉為列表 [name1, name2]
+                return [row['product'] for row in cursor.fetchall()]
+        except Exception as e:
+            print(f"Error fetching products: {e}")
+            return []
 
-    def get_product_price(self, cur, product):
-        # TODO: Execute SQL to select price by product name
+    def get_product_price(self, product):
+        # 根據 product 名稱查詢單價
         sql = "SELECT price FROM commodity WHERE product = ?"
-        cur.execute(sql, (product,))
-        result = cur.fetchone()
-        # 如果有找到回傳價格，沒找到回傳 None
-        return result[0] if result else None
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql, (product,))
+                result = cursor.fetchone()
+                # 若有查到結果回傳 price，否則回傳 None
+                return result['price'] if result else None
+        except Exception as e:
+            print(f"Error fetching price: {e}")
+            return None
 
-    def add_order(self, cur, order_data):
-        # TODO: Execute SQL to insert a new order into order_list
+    def add_order(self, order_data):
+        # 將訂單資料字典 (Dictionary) 寫入 order_list 資料表
+        
+        # 1. 產生 ID
         order_id = self.generate_order_id()
         
-        # 對應 SQL 欄位與傳入的字典 Key
+        # 2. 準備 SQL (對應資料庫欄位: order_id, date, customer_name, product, amount, total, status, note)
         sql = """
         INSERT INTO order_list 
         (order_id, date, customer_name, product, amount, total, status, note) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """
         
-        # 注意: 這裡假設 order_data 的 key 與 Part 2 前端傳來的一致
+        # 3. 準備變數 (從 order_data 字典中取出對應的值)
+        # 注意: 字典的 Key 必須與 app.py 傳入的一致
         values = (
             order_id,
-            order_data['product_date'],      # 對應 DB: date
-            order_data['customer_name'],     # 對應 DB: customer_name
-            order_data['product_name'],      # 對應 DB: product (注意名稱差異)
-            order_data['product_amount'],    # 對應 DB: amount
-            order_data['product_total'],     # 對應 DB: total
-            order_data['product_status'],    # 對應 DB: status
-            order_data['product_note']       # 對應 DB: note
+            order_data['product_date'],      # 對應 date
+            order_data['customer_name'],     # 對應 customer_name
+            order_data['product_name'],      # 對應 product (注意名稱差異)
+            order_data['product_amount'],    # 對應 amount
+            order_data['product_total'],     # 對應 total
+            order_data['product_status'],    # 對應 status
+            order_data['product_note']       # 對應 note
         )
-        
-        cur.execute(sql, values)
 
-    def get_all_orders(self, cur):
-        # TODO: Execute SQL to get all order information
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql, values)
+                conn.commit() # 新增資料必須 commit
+        except Exception as e:
+            print(f"Error adding order: {e}")
+
+    def get_all_orders(self):
+        # 取得所有訂單，並需額外查詢該商品的 price 欄位合併回傳
+        # 使用 LEFT JOIN 連接 commodity 資料表
         sql = """
         SELECT 
             o.order_id, 
@@ -72,10 +93,22 @@ class Database():
         LEFT JOIN commodity c ON o.product = c.product
         ORDER BY o.date DESC
         """
-        cur.execute(sql)
-        return cur.fetchall()
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql)
+                return cursor.fetchall()
+        except Exception as e:
+            print(f"Error fetching orders: {e}")
+            return []
 
-    def delete_order(self, cur, order_id):
-        # TODO: Execute SQL to delete order by order_id
+    def delete_order(self, order_id):
+        # 根據 order_id 刪除特定訂單
         sql = "DELETE FROM order_list WHERE order_id = ?"
-        cur.execute(sql, (order_id,))
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql, (order_id,))
+                conn.commit() # 刪除資料必須 commit
+        except Exception as e:
+            print(f"Error deleting order: {e}")
