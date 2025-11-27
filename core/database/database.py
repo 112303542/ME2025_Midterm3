@@ -28,7 +28,7 @@ class Database():
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(sql, (category,))
-            return [row['product'] for row in cursor.fetchall()]
+            return cursor.fetchall()
 
     def get_product_price(self,product):
         # TODO: Execute SQL to select price by product name
@@ -90,9 +90,13 @@ class Database():
 
     def delete_order(self, order_id):
         # TODO: Execute SQL to delete order by order_id
-        # 根據 order_id 刪除特定訂單
         sql = "DELETE FROM order_list WHERE order_id = ?"
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(sql, (order_id,))
-            conn.commit()
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql, (order_id,))
+                conn.commit()
+                return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
