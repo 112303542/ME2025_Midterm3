@@ -1,6 +1,10 @@
 // 開啟與關閉Modal
 function open_input_table() {
     document.getElementById("addModal").style.display = "block";
+    const dateInput = document.getElementById("product_date");
+    if (dateInput) {
+        dateInput.valueAsDate = new Date();
+    }
 }
 function close_input_table() {
     document.getElementById("addModal").style.display = "none";
